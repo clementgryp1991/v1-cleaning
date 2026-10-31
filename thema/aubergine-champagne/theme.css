@@ -1,3 +1,3 @@
-:root{--navy:#2A1220;--lime:#E9C46A;--bone:#F6F1EA;--steel:#9A8F94;--ink:#2A1220;--navy2:#3E1C30}
+:root{--navy:#2A1220;--lime:#E9C46A;--bone:#F6F1EA;--steel:#6E6368;--ink:#2A1220;--navy2:#3E1C30}
 .stage{background:radial-gradient(circle at 70% 20%,#3E1C30,#2A1220 60%)}.hero-shade{background:linear-gradient(180deg,#2A12208c 0%,#2A122033 35%,#2A1220eb 100%)}
 .nav.s{background:#2A1220db}.btn:hover{box-shadow:0 12px 30px -10px #E9C46Ab3}.msg.ai{background:#E9C46A24;border-color:#E9C46A4d}
