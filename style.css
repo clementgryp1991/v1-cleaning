@@ -90,3 +90,4 @@ input[type=range]{padding:0;accent-color:var(--navy)}output{font-size:24px;font-
 @media(max-width:860px){.cb{grid-template-columns:1fr}.cl a{grid-template-columns:1fr auto;padding:20px}.cl small{grid-column:1/-1}.opts span{padding:16px;font-size:15px}.foot{padding-bottom:100px}}
 .brand img.wm{height:30px;width:auto}.foot .brand img.wm{height:36px}
 @media(min-width:861px){.nav .brand img.wm{height:40px}}
+.wtxt{font-weight:800;font-size:24px;letter-spacing:-.03em;color:var(--bone)}.wtxt b{color:var(--lime);font-weight:800;margin:0}
