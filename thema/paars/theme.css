@@ -1,0 +1,3 @@
+:root{--navy:#1E1240;--lime:#7CF5C8;--bone:#F5F3FA;--steel:#6B6480;--ink:#1E1240;--navy2:#2D1B5E}
+.stage{background:radial-gradient(circle at 70% 20%,#2D1B5E,#1E1240 60%)}.hero-shade{background:linear-gradient(180deg,#1E12408c 0%,#1E124033 35%,#1E1240eb 100%)}
+.nav.s{background:#1E1240db}.btn:hover{box-shadow:0 12px 30px -10px #7CF5C8b3}.msg.ai{background:#7CF5C824;border-color:#7CF5C84d}
