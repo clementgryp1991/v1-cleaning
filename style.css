@@ -123,7 +123,7 @@ section{padding:120px 0}h2{font-size:clamp(36px,5.2vw,68px);line-height:1;letter
 .pane img{border-radius:var(--r);aspect-ratio:4/3;object-fit:cover;width:100%}.pane h3{font-size:34px;letter-spacing:-.03em;margin-bottom:20px}.pane ul{list-style:none;display:grid;gap:12px}.pane li{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:17px}.pane li:before{content:"→";color:var(--lime);margin-right:12px}
 .tag{display:inline-block;margin-top:20px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.5}
 .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.b{background:#fff;border-radius:var(--r);padding:32px;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid rgba(11,27,43,.06);transition:transform .3s var(--e)}
-.b h3{font-size:24px;letter-spacing:-.02em;margin-bottom:8px}.b p{opacity:.7;line-height:1.5}.b.big{grid-row:span 2;background:url(img/production.jpg) center/cover;color:#fff;position:relative;overflow:hidden}.b.big:before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(11,27,43,.95))}.b.big *{position:relative}.b.big h3{font-size:34px}
+.b h3{font-size:24px;letter-spacing:-.02em;margin-bottom:8px}.b p{opacity:.7;line-height:1.5}.b.big{grid-row:span 2;background:url(img/production-800.webp) center/cover;color:#fff;position:relative;overflow:hidden}.b.big:before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(11,27,43,.95))}.b.big *{position:relative}.b.big h3{font-size:34px}
 .b.dark{background:var(--navy);color:#fff}.b.lime{background:var(--lime)}
 .ct{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center}.ct figure{position:relative}.ct img{border-radius:32px;aspect-ratio:3/4;object-fit:cover}.ct figcaption{position:absolute;left:16px;bottom:16px;font-size:11px;background:rgba(0,0,0,.5);color:#fff;padding:4px 10px;border-radius:99px}
 .contact .eyebrow{color:var(--navy)}.contact h2 em{color:var(--navy);background:linear-gradient(transparent 60%,var(--lime) 60%)}
@@ -206,3 +206,5 @@ input[type=range]{padding:0;accent-color:var(--navy)}output{font-size:24px;font-
 
 @media(min-width:861px){.fstep{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 @media(max-width:860px){.flabels{display:none}}
+
+.steps li b,.pr b,.sum{color:#5d6873}
