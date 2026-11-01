@@ -1,2 +1,3 @@
 User-agent: *
 Disallow: /
+Sitemap: https://clementgryp1991.github.io/v1-cleaning/sitemap.xml
