@@ -14,25 +14,31 @@ const tl=$('.stl');if(tl){const ts=$$('[role=tab]',tl);const go=(i,f)=>{ts.forEa
 ts.forEach((t,i)=>{t.onclick=()=>go(i);t.onkeydown=e=>{const k={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(k){e.preventDefault();go((i+k+ts.length)%ts.length,1)}}})}
 /* faq smooth */
 if(!RM)$$('.faq details').forEach(d=>{const s=$('summary',d),a=$('.fa',d);s.onclick=e=>{e.preventDefault();if(d.open){const h=a.scrollHeight;a.animate([{height:h+'px'},{height:'0px'}],{duration:260,easing:'ease'}).onfinish=()=>d.open=false}else{d.open=true;const h=a.scrollHeight;a.animate([{height:'0px'},{height:h+'px'}],{duration:300,easing:'ease'})}}});
-/* offertewizard */
-const w=$('#wz');if(w){const st=$$('.ws:not(.done)',w),lis=$$('.wsteps li',w),bar=$('.wbar i',w),nx=$('#wzn'),bk=$('#wzb'),er=$('#wze');let i=0;const N=st.length;
+/* offertewizard v5: 3 stappen, pijler + subkeuze, eerlijke verzending */
+const w=$('#wz');if(w){const st=$$('.ws:not(.done)',w),lis=$$('.wsteps li',w),bar=$('.wbar i',w),nx=$('#wzn'),bk=$('#wzb'),er=$('#wze'),pk=$('#wzpick');let i=0;const N=st.length;
+const picked=()=>{const p=$('[name=pijler]:checked',w);if(!p)return'';const ds=$$('[name=dienst]:checked',w).map(c=>c.value);return p.value=='Advies'?'Advies gevraagd':(ds.length?ds.join(', '):p.value)};
+const sync=()=>{const p=$('[name=pijler]:checked',w),v=p&&p.value;$$('.wsub',w).forEach(x=>{const on=x.dataset.p==v;x.hidden=!on;if(!on)$$('input',x).forEach(c=>c.checked=false)});const t=picked();pk.hidden=!t;pk.textContent=t?'Je aanvraag: '+t:''};
+$$('[name=pijler],[name=dienst]',w).forEach(x=>x.addEventListener('change',sync));
 const show=(f)=>{st.forEach((s,j)=>s.classList.toggle('on',j==i));lis.forEach((l,j)=>{l.classList.toggle('on',j==i);l.classList.toggle('dn',j<i)});bar.style.width=((i+1)/N*100)+'%';bk.style.visibility=i?'visible':'hidden';nx.innerHTML=i==N-1?'Aanvraag afronden <i aria-hidden="true">→</i>':'Volgende <i aria-hidden="true">→</i>';$('#wzs').textContent=`Stap ${i+1} van ${N}: ${lis[i].textContent}`;er.textContent='';if(f){const l=$('legend',st[i]);l.tabIndex=-1;l.focus({preventScroll:true});const y=w.getBoundingClientRect().top+scrollY-90;if(scrollY>y)scrollTo({top:y,behavior:RM?'auto':'smooth'})}};
 const ok=()=>{const s=st[i];let bad=[];const need=s.dataset.need;if(need&&!$(`[name=${need}]:checked`,s))bad.push($(`[name=${need}]`,s));
+['opp','freq'].forEach(n=>{const r=$(`[name=${n}]`,s);if(r&&!$(`[name=${n}]:checked`,s))bad.push(r)});
 $$('input[required]:not([type=radio]):not([type=checkbox]),textarea[required]',s).forEach(x=>{const v=x.checkValidity();x.setAttribute('aria-invalid',!v);if(!v)bad.push(x)});
-['opp','freq'].forEach(n=>{const r=$(`[name=${n}]`,s);if(r&&!$(`[name=${n}]:checked`,s))bad.push(r)});const c=$('[name=ok]',s);if(c&&!c.checked)bad.push(c);
-er.textContent=bad.length?(need=='dienst'?'Kies minstens één dienst.':need=='sector'?'Kies een type locatie.':'Vul de ontbrekende velden in.'):'';if(bad[0])bad[0].focus();return!bad.length};
+er.textContent=bad.length?(need=='pijler'?'Kies wat je wil laten schoonmaken.':'Vul de ontbrekende velden in.'):'';if(bad[0])bad[0].focus();return!bad.length};
 $$('input',w).forEach(x=>x.addEventListener('change',()=>{er.textContent='';x.removeAttribute('aria-invalid')}));
-$$('.ws[data-need=sector] input',w).forEach(x=>x.addEventListener('change',()=>{if(i==1)setTimeout(()=>{i=2;show(1)},RM?0:220)}));
+let txt='';const fin=sent=>{$('#wzok').hidden=!sent;$('#wzno').hidden=sent;st.forEach(s=>s.classList.remove('on'));$('.wnav',w).hidden=true;lis.forEach(l=>{l.classList.remove('on');l.classList.add('dn')});bar.style.width='100%';const dn=$('#wzd');dn.classList.add('on');dn.focus()};
 bk.onclick=()=>{if(i){i--;show(1)}};nx.onclick=()=>{if(!ok())return;if(i<N-1){i++;show(1);return}if(w.website.value)return;const d=new FormData(w);
-const rows=[['Dienst',d.getAll('dienst').join(', ')],['Locatie',d.get('sector')],['Oppervlakte',d.get('opp')],['Frequentie',d.get('freq')],['Postcode',d.get('postcode')],['Bedrijf',d.get('bedrijf')],['Contact',d.get('naam')+' · '+d.get('email')]];
+const rows=[['Wat',picked()],['Type locatie',d.get('sector')],['Oppervlakte',d.get('opp')],['Frequentie',d.get('freq')],['Postcode',d.get('postcode')],['Bedrijf',d.get('bedrijf')],['Contactpersoon',d.get('naam')],['E-mail',d.get('email')],['Telefoon',d.get('tel')],['Toelichting',d.get('msg')]];
 $('#wzsum').innerHTML='';rows.forEach(([a,b])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=a;dd.textContent=b||'–';$('#wzsum').append(dt,dd)});
-st.forEach(s=>s.classList.remove('on'));$('.wnav',w).hidden=true;lis.forEach(l=>{l.classList.remove('on');l.classList.add('dn')});bar.style.width='100%';const dn=$('#wzd');dn.classList.add('on');dn.focus()};
-$('#wzr').onclick=()=>{w.reset();$('#wzd').classList.remove('on');$('.wnav',w).hidden=false;i=0;show(1)};
-const p=new URLSearchParams(location.search).get('dienst');if(p){const c=$(`[data-slug="${CSS.escape(p)}"]`,w);if(c)c.checked=true}show()}
+txt='Offerteaanvraag V CLEAN\n\n'+rows.map(([a,b])=>a+': '+(b||'–')).join('\n');const m=$('#wzm');if(m)m.href='mailto:'+w.dataset.mail+'?subject='+encodeURIComponent('Offerteaanvraag '+(d.get('bedrijf')||''))+'&body='+encodeURIComponent(txt);
+const ep=w.dataset.endpoint;if(!ep){fin(false);return}nx.disabled=true;d.set('Wat',picked());fetch(ep,{method:'POST',body:d,headers:{Accept:'application/json'}}).then(r=>{if(!r.ok)throw 0;fin(true)}).catch(()=>fin(false)).finally(()=>nx.disabled=false)};
+const cb=$('#wzc');if(cb)cb.onclick=()=>{const done=()=>cb.textContent='Gekopieerd';navigator.clipboard?navigator.clipboard.writeText(txt).then(done,()=>{}):0};
+$('#wzr').onclick=()=>{w.reset();sync();$('#wzd').classList.remove('on');$('.wnav',w).hidden=false;if(cb)cb.textContent='Kopieer je aanvraag';i=0;show(1)};
+window.wzPick=s=>{const c=$(`[data-slug="${CSS.escape(s)}"]`,w);if(!c)return;const g=c.closest('.wsub').dataset.p;const r=$$('[name=pijler]',w).find(x=>x.value==g);if(r)r.checked=true;sync();$$('[name=dienst]',w).forEach(x=>x.checked=x==c);sync()};
+const p=new URLSearchParams(location.search).get('dienst');if(p)wzPick(p);sync();show()}
 /* werken-bij formulier (bestaand) */
 const f=$('#wf');if(f){const fs=$$('#wf fieldset.fs');let i=0;const N=fs.length;const show=()=>{fs.forEach((x,j)=>x.classList.toggle('on',j==i));$('#wstep').textContent=`Stap ${i+1} van ${N}`;$('#wprog').style.width=((i+1)/N*100)+'%';$('#wprev').style.visibility=i?'visible':'hidden';$('#wnext').textContent=i==N-1?'Verstuur aanmelding →':'Volgende →'};
 const ok=()=>{const bad=[...fs[i].querySelectorAll('[required]')].filter(x=>x.type=='radio'?!fs[i].querySelector(`[name=${x.name}]:checked`):x.type=='checkbox'?!x.checked:!x.checkValidity());$('#werr').textContent=bad.length?'Vul de verplichte velden in.':'';if(bad[0])bad[0].focus();return!bad.length};
-$('#wprev').onclick=()=>{if(i){i--;show()}};$('#wnext').onclick=()=>{if(!ok())return;if(i<N-1){i++;show();return}if(f.website.value)return;const d=new FormData(f);fs.forEach(x=>x.classList.remove('on'));f.querySelector('.fnav').style.display='none';$('#wstep').textContent='Verzonden';$('#wprog').style.width='100%';$('#wsum').textContent=`${d.get('type')} · ${d.get('regio')} · ${d.get('naam')}`;const dn=$('#wdone');dn.classList.add('on');dn.focus()};show()}
+$('#wprev').onclick=()=>{if(i){i--;show()}};$('#wnext').onclick=()=>{if(!ok())return;if(i<N-1){i++;show();return}if(f.website.value)return;const d=new FormData(f);fs.forEach(x=>x.classList.remove('on'));f.querySelector('.fnav').style.display='none';$('#wstep').textContent='Nog niet verzonden';$('#wprog').style.width='100%';$('#wsum').textContent=`${d.get('type')} · ${d.get('regio')} · ${d.get('naam')}`;const dn=$('#wdone');dn.classList.add('on');dn.focus()};show()}
 /* ===== v3 ===== */
 const FINE=matchMedia('(hover:hover) and (pointer:fine)').matches,ROOT=document.body.dataset.root||'';
 /* hero carrousel */
@@ -63,7 +69,7 @@ addEventListener('scroll',()=>requestAnimationFrame(upd),{passive:true});upd()}
 /* kaart <-> lijst */
 $$('.mapw').forEach(m=>{const by=c=>$$(`[data-c="${c}"]`,m);$$('[data-c]',m).forEach(el=>{['pointerenter','focus'].forEach(ev=>el.addEventListener(ev,()=>by(el.dataset.c).forEach(x=>x.classList.add('hl'))));['pointerleave','blur'].forEach(ev=>el.addEventListener(ev,()=>by(el.dataset.c).forEach(x=>x.classList.remove('hl'))))})});
 /* sticky offerte-CTA mobiel */
-const mc=$('#mcta');if(mc){const of=$('#offerte'),hr=$('#hero');let vis={o:false};const io3=new IntersectionObserver(es=>{es.forEach(e=>vis[e.target.id]=e.isIntersecting);mc.classList.toggle('on',!vis.offerte&&!(hr&&vis.hero)&&scrollY>300)});[of,hr].filter(Boolean).forEach(x=>io3.observe(x));addEventListener('scroll',()=>{if(!of&&!hr)mc.classList.toggle('on',scrollY>400)},{passive:true});if(!of)mc.href=ROOT+'#offerte'}
+const mc=$('#mcta');if(mc){const of=$('#offerte'),hr=$('#hero');let vis={o:false};const io3=new IntersectionObserver(es=>{es.forEach(e=>vis[e.target.id]=e.isIntersecting);mc.classList.toggle('on',!vis.offerte&&!(hr&&vis.hero)&&scrollY>300)});[of,hr].filter(Boolean).forEach(x=>io3.observe(x));addEventListener('scroll',()=>{if(!of&&!hr)mc.classList.toggle('on',scrollY>400)},{passive:true})}
 /* command / zoek-overlay */
 const cm=$('#cmd'),ci=$('#cmdi'),cl=$('#cmdl'),sbn=$('#sbtn');if(cm){let data=null,sel=0,list=[],last=null;
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -78,7 +84,7 @@ sbn.onclick=open;$('[data-close]',cm).onclick=close;ci.oninput=render;
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='k'){e.preventDefault();cm.hidden?open():close()}else if(e.key=='/'&&cm.hidden&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();open()}
 if(cm.hidden)return;if(e.key=='Escape')close();if(e.key=='ArrowDown'){e.preventDefault();list.length&&mark((sel+1)%list.length)}if(e.key=='ArrowUp'){e.preventDefault();list.length&&mark((sel-1+list.length)%list.length)}if(e.key=='Enter'&&list[sel]){e.preventDefault();openx(list[sel])}if(e.key=='Tab'){e.preventDefault();ci.focus()}})}
 /* links naar #offerte met ?dienst: wizard bijwerken zonder reload */
-$$('a[href^="?dienst="]').forEach(a=>a.addEventListener('click',e=>{const w=$('#wz');if(!w)return;e.preventDefault();const s=new URLSearchParams(a.getAttribute('href').split('#')[0]).get('dienst');$$('[name=dienst]',w).forEach(c=>c.checked=c.dataset.slug==s);history.replaceState(null,'','?dienst='+s+'#offerte');$('#offerte').scrollIntoView({behavior:RM?'auto':'smooth'})}));
+$$('a[href^="?dienst="]').forEach(a=>a.addEventListener('click',e=>{const w=$('#wz');if(!w)return;e.preventDefault();const s=new URLSearchParams(a.getAttribute('href').split('#')[0]).get('dienst');window.wzPick&&wzPick(s);history.replaceState(null,'','?dienst='+s+'#offerte');$('#offerte').scrollIntoView({behavior:RM?'auto':'smooth'})}));
 /* v3.3 video: alleen actieve slide, niet bij reduced-motion, Save-Data of <768px */
 (()=>{const ok=()=>!matchMedia('(prefers-reduced-motion: reduce)').matches&&!(navigator.connection&&navigator.connection.saveData)&&matchMedia('(min-width:768px)').matches;
 const mk=el=>{let v=el.querySelector('video');if(v)return v;const b=el.dataset.v,im=el.querySelector('img');v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('aria-hidden','true');v.preload='auto';v.poster=im.currentSrc||im.src;v.className='bgv';v.innerHTML=`<source src="${b}.webm" type="video/webm"><source src="${b}.mp4" type="video/mp4">`;v.addEventListener('playing',()=>v.classList.add('on'));im.after(v);return v};
