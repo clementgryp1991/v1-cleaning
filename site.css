@@ -248,3 +248,4 @@ video.bgv.on{opacity:1}
 .nw{white-space:nowrap}
 @media(max-width:760px) and (max-height:700px){.hhead{padding-top:20px}.hhead h1{font-size:24px}.hsc p:not(.hsn){font-size:15px}.hsc .cta{margin-top:12px;gap:12px}.hsc .btn{padding:11px 18px}}
 @media(min-width:761px) and (max-height:620px){.hhead{padding-top:90px}.hhead h1{font-size:34px}}
+.hsc .hsn{max-width:none}
