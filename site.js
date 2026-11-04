@@ -36,7 +36,7 @@ $('#wprev').onclick=()=>{if(i){i--;show()}};$('#wnext').onclick=()=>{if(!ok())re
 /* ===== v3 ===== */
 const FINE=matchMedia('(hover:hover) and (pointer:fine)').matches,ROOT=document.body.dataset.root||'';
 /* hero carrousel */
-const hc=$('#hero');if(hc){const ss=$$('.hs',hc),ds=$$('.hd-dot',hc),bar=$('.hbar i',hc),pp=$('#hpp');let k=0,t0=performance.now(),paused=RM,hold=false,raf;const D=6500;
+const hc=$('#hero');if(hc){const ss=$$('.hs',hc),ds=$$('.hd-dot',hc),bar=$('.hbar i',hc),pp=$('#hpp');let k=0,t0=performance.now(),paused=RM,hold=false,raf;const D=7000;
 const go=n=>{k=(n+ss.length)%ss.length;ss.forEach((s,j)=>{const on=j==k;s.classList.toggle('on',on);s.setAttribute('aria-hidden',!on);$$('a',s).forEach(a=>a.tabIndex=on?0:-1);const im=$('img',s);if(on&&im.loading=='lazy')im.loading='eager'});ds.forEach((d,j)=>{d.classList.toggle('on',j==k);j==k?d.setAttribute('aria-current','true'):d.removeAttribute('aria-current')});t0=performance.now();bar.style.width='0'};
 const setP=p=>{paused=p;hc.classList.toggle('paused',p);pp.setAttribute('aria-label',p?'Speel de carrousel af':'Pauzeer de carrousel')};setP(RM);
 const tick=now=>{if(!paused&&!hold){const p=(now-t0)/D;bar.style.width=Math.min(p,1)*100+'%';if(p>=1)go(k+1)}else t0=now-(parseFloat(bar.style.width)||0)/100*D;raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick);
@@ -79,3 +79,11 @@ addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='
 if(cm.hidden)return;if(e.key=='Escape')close();if(e.key=='ArrowDown'){e.preventDefault();list.length&&mark((sel+1)%list.length)}if(e.key=='ArrowUp'){e.preventDefault();list.length&&mark((sel-1+list.length)%list.length)}if(e.key=='Enter'&&list[sel]){e.preventDefault();openx(list[sel])}if(e.key=='Tab'){e.preventDefault();ci.focus()}})}
 /* links naar #offerte met ?dienst: wizard bijwerken zonder reload */
 $$('a[href^="?dienst="]').forEach(a=>a.addEventListener('click',e=>{const w=$('#wz');if(!w)return;e.preventDefault();const s=new URLSearchParams(a.getAttribute('href').split('#')[0]).get('dienst');$$('[name=dienst]',w).forEach(c=>c.checked=c.dataset.slug==s);history.replaceState(null,'','?dienst='+s+'#offerte');$('#offerte').scrollIntoView({behavior:RM?'auto':'smooth'})}));
+/* v3.3 video: alleen actieve slide, niet bij reduced-motion, Save-Data of <768px */
+(()=>{const ok=()=>!matchMedia('(prefers-reduced-motion: reduce)').matches&&!(navigator.connection&&navigator.connection.saveData)&&matchMedia('(min-width:768px)').matches;
+const mk=el=>{let v=el.querySelector('video');if(v)return v;const b=el.dataset.v,im=el.querySelector('img');v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('aria-hidden','true');v.preload='auto';v.poster=im.currentSrc||im.src;v.className='bgv';v.innerHTML=`<source src="${b}.webm" type="video/webm"><source src="${b}.mp4" type="video/mp4">`;v.addEventListener('playing',()=>v.classList.add('on'));im.after(v);return v};
+const sync=()=>{if(!ok()){document.querySelectorAll('video.bgv').forEach(v=>v.pause());return}document.querySelectorAll('#hero .hs[data-v]').forEach(s=>{if(s.classList.contains('on')){const v=mk(s);const p=v.play();p&&p.catch(()=>{})}else{const v=s.querySelector('video');if(v){v.pause();v.currentTime=0}}})};
+const start=()=>{const h=document.getElementById('hero');if(h){new MutationObserver(sync).observe(h,{subtree:true,attributes:true,attributeFilter:['class']});sync()}
+const f=document.querySelectorAll('.vfig[data-v]');if(f.length&&'IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(!ok())return;const v=e.isIntersecting?mk(e.target):e.target.querySelector('video');if(!v)return;e.isIntersecting?v.play().catch(()=>{}):v.pause()}),{rootMargin:'200px'});f.forEach(x=>io.observe(x))}};
+document.readyState=='complete'?setTimeout(start,1200):addEventListener('load',()=>setTimeout(start,1200));
+document.addEventListener('visibilitychange',()=>document.querySelectorAll('video.bgv').forEach(v=>document.hidden?v.pause():(v.closest('.hs.on,.vfig')&&ok()&&v.play().catch(()=>{}))))})();
