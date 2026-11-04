@@ -235,3 +235,4 @@ html{overflow-x:clip;scrollbar-color:#2a4058 #0b1b2b}body{overflow-x:clip}
 .tbtn{padding:9px}.tbtn span{display:none}
 @media(max-width:1400px){.links a{padding:8px 9px;font-size:15px}.sbtn kbd{display:none}.sbtn{padding:9px}}
 @media(max-width:760px){.hero.hc{height:auto;min-height:calc(100svh - 64px)}}
+@media(max-width:1180px){.tbtn{margin-left:auto;border-color:transparent}.sbtn{margin-left:0}}
