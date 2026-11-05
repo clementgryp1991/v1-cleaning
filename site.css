@@ -99,7 +99,7 @@ p{margin:0 0 1em;max-width:62ch}
 .hs{opacity:0;visibility:hidden;transition:opacity .9s var(--e),visibility .9s}.hs.on{opacity:1;visibility:visible;z-index:1}
 .hs img,.hc .hs img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover}
 .hs img{transform:scale(1.04);transition:transform 8s linear}.hs.on img{transform:scale(1)}.hs:first-child img{transform:none;transition:none}
-.hs::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(10,15,22,.55) 0%,rgba(10,15,22,0) 28%),linear-gradient(90deg,rgba(10,15,22,.78) 0%,rgba(10,15,22,.45) 45%,rgba(10,15,22,0) 75%),linear-gradient(0deg,rgba(10,15,22,.6) 0%,rgba(10,15,22,0) 40%)}
+.hs::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:   linear-gradient(180deg,rgba(10,15,22,.35) 0%,rgba(10,15,22,0) 26%),   linear-gradient(90deg,rgba(10,15,22,.55) 0%,rgba(10,15,22,.28) 42%,rgba(10,15,22,0) 72%),   linear-gradient(0deg,rgba(10,15,22,.45) 0%,rgba(10,15,22,0) 38%)}
 .hs::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:none}
 .hshade{display:none}
 .hhead{position:absolute;left:0;right:0;top:0;z-index:4;padding-top:calc(var(--hd) + clamp(24px,6vh,72px))}
@@ -128,7 +128,7 @@ p{margin:0 0 1em;max-width:62ch}
   .hero.hc{height:auto;min-height:calc(100svh - 56px)}
   .hhead{position:relative;padding:28px 0 120px}.hhead h1{font-size:30px}.hhead .hlead{font-size:16px}
   .hhead .cta .btn{flex:1 1 auto;justify-content:center}
-  .hs::after{background:linear-gradient(180deg,rgba(10,22,40,.75) 0,rgba(10,22,40,.15) 35%,rgba(10,22,40,.4) 55%,rgba(10,22,40,.92) 85%)}
+  .hs::after{background:linear-gradient(180deg,rgba(10,15,22,.42) 0,rgba(10,15,22,.08) 32%,rgba(10,15,22,.22) 55%,rgba(10,15,22,.55) 100%)}
   .hsc{bottom:72px}.hctl{left:16px;right:16px;bottom:20px;justify-content:center}#hprev,#hnext{display:none}
   /* Mobiel: blijf Tesla-achtig transparent over de hero; sticky alleen na scroll (.s) */
   .home .hd.ov:not(.s){position:fixed;background:transparent;color:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}
@@ -359,3 +359,6 @@ input,select,textarea{font-size:16px}
 .fct p{padding:8px 32px;margin:0;border-left:1px solid var(--border)}
 .fct p:first-child{border-left:0;padding-left:0}
 @media(max-width:760px){.fct{grid-template-columns:1fr}.fct p{border-left:0;border-top:1px solid var(--border);padding:16px 0}}
+
+.ft address a{color:var(--cyan-300);text-decoration:none}.ft address a:hover{color:#fff;text-decoration:underline}
+.tbtn{gap:8px}.tbtn span{display:none}@media(min-width:1181px){.tbtn span{display:inline;font-size:13px;font-weight:500}}
