@@ -362,3 +362,12 @@ input,select,textarea{font-size:16px}
 
 .ft address a{color:var(--cyan-300);text-decoration:none}.ft address a:hover{color:#fff;text-decoration:underline}
 .tbtn{gap:8px}.tbtn span{display:none}@media(min-width:1181px){.tbtn span{display:inline;font-size:13px;font-weight:500}}
+
+
+/* Floating phone FAB — bottom-right, lifts above #mcta on mobile */
+.pfab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:50;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--blue-600);color:#fff;text-decoration:none;box-shadow:0 8px 24px rgba(10,15,22,.18);transition:bottom .3s var(--e),transform .15s var(--e),background .15s;touch-action:manipulation}
+.pfab:hover{background:var(--blue-700);transform:translateY(-1px)}.pfab:active{transform:none}.pfab:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+@media(max-width:760px){
+  #mcta.on~.pfab{bottom:calc(12px + 60px + 12px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){.pfab{transition:none}}
