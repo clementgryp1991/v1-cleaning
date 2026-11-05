@@ -272,7 +272,7 @@ p{margin:0 0 1em;max-width:62ch}
 .ft nav{display:flex;flex-direction:column;gap:2px}.ft nav b{color:#fff;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 10px;font-weight:560}.ft nav b.mt{margin-top:20px}
 .ft nav a{text-decoration:none;padding:6px 0;min-height:36px;display:inline-flex;align-items:center;color:rgba(255,255,255,.65);font-size:14px;transition:color .15s}.ft nav a:hover{color:#fff}
 .ft .inl{display:flex;flex-wrap:wrap;gap:4px 12px}.ft .inl a{padding:4px 0;min-height:32px}
-.ft .legal{border-top:1px solid rgba(255,255,255,.1);margin-top:48px;padding-top:20px;font-size:12px;max-width:none;color:rgba(255,255,255,.45)}.ft .legal a{color:inherit;text-decoration:underline}.ft .ph{background:rgba(255,255,255,.08);color:#F5E6A0}
+.ft .legal{border-top:1px solid rgba(255,255,255,.1);margin-top:48px;padding-top:20px;font-size:12px;max-width:none;color:rgba(255,255,255,.62)}.ft .legal a{color:inherit;text-decoration:underline}.ft .ph{background:rgba(255,255,255,.08);color:#F5E6A0}
 
 /* End CTA / crumbs / compare */
 .endcta{background:var(--w);padding:clamp(64px,8vw,112px) 0;border-top:1px solid var(--b)}
