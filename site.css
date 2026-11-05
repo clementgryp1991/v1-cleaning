@@ -141,11 +141,11 @@ p{margin:0 0 1em;max-width:62ch}
 @media(max-width:760px) and (max-height:700px){.hhead{padding-top:calc(var(--hd) + 16px)}.hhead h1{font-size:26px}.hhead .cta{margin-top:16px}}.hhead .cta{margin-top:16px}}
 
 /* Facts / promises strip */
-.facts{background:var(--ink-950);color:rgba(255,255,255,.75);border-top:1px solid rgba(255,255,255,.06)}
+.facts{background:var(--bg-subtle);color:var(--ink-700);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .facts.prom{width:100%}
 .fct{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:28px 0}
 .prom .fct{gap:32px}.prom p{display:flex;flex-direction:column;gap:4px;font-size:14px;margin:0;line-height:1.4}
-.prom b{color:#fff;font-size:16px;font-weight:560;letter-spacing:-.01em}
+.prom b{color:var(--ink-950);font-size:16px;font-weight:560;letter-spacing:-.01em}
 @media(max-width:760px){.fct,.prom .fct{grid-template-columns:1fr;gap:16px;padding:20px 0}}
 
 /* Sections — Tesla whitespace */
@@ -328,7 +328,7 @@ p{margin:0 0 1em;max-width:62ch}
 }
 
 /* v8 section rhythm + Linear cards */
-.sblk,.blk,.prom{padding-block:clamp(64px,10vw,128px)}
+.sblk,.blk{padding-block:clamp(64px,10vw,128px)}.prom.facts{padding-block:28px}
 .dc,.pil,.wz,.cmdp,.fact,.nsteps li,.wopt,.wsub label{box-shadow:none!important}
 .dc,.pil{border:1px solid var(--border);border-radius:12px;background:var(--surface);transition:border-color var(--dur-2) var(--ease),background-color var(--dur-2) var(--ease)}
 .dc:hover,.pil:hover{border-color:var(--border-strong);background:#FBFCFD}
