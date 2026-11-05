@@ -42,9 +42,9 @@ $('#wprev').onclick=()=>{if(i){i--;show()}};$('#wnext').onclick=()=>{if(!ok())re
 /* ===== v3 ===== */
 const FINE=matchMedia('(hover:hover) and (pointer:fine)').matches,ROOT=document.body.dataset.root||'';
 /* hero carrousel */
-const hc=$('#hero');if(hc){const ss=$$('.hs',hc),ds=$$('.hd-dot',hc),bar=$('.hbar i',hc),pp=$('#hpp');let k=0,t0=performance.now(),paused=RM,hold=false,raf;const D=7000;
+const hc=$('#hero');if(hc){/* carousel init pause state */const ss=$$('.hs',hc),ds=$$('.hd-dot',hc),bar=$('.hbar i',hc),pp=$('#hpp');let k=0,t0=performance.now(),paused=true,hold=false,raf;const D=9000;
 const go=n=>{k=(n+ss.length)%ss.length;ss.forEach((s,j)=>{const on=j==k;s.classList.toggle('on',on);s.setAttribute('aria-hidden',!on);$$('a',s).forEach(a=>a.tabIndex=on?0:-1);const im=$('img',s);if(on&&im.loading=='lazy')im.loading='eager'});ds.forEach((d,j)=>{d.classList.toggle('on',j==k);j==k?d.setAttribute('aria-current','true'):d.removeAttribute('aria-current')});t0=performance.now();bar.style.width='0'};
-const setP=p=>{paused=p;hc.classList.toggle('paused',p);pp.setAttribute('aria-label',p?'Speel de carrousel af':'Pauzeer de carrousel')};setP(RM);
+const setP=p=>{paused=p;hc.classList.toggle('paused',p);pp.setAttribute('aria-label',p?'Speel de carrousel af':'Pauzeer de carrousel');pp.classList.toggle('play',p)};setP(true);
 const tick=now=>{if(!paused&&!hold){const p=(now-t0)/D;bar.style.width=Math.min(p,1)*100+'%';if(p>=1)go(k+1)}else t0=now-(parseFloat(bar.style.width)||0)/100*D;raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick);
 $('#hnext').onclick=()=>go(k+1);$('#hprev').onclick=()=>go(k-1);ds.forEach((d,j)=>d.onclick=()=>go(j));pp.onclick=()=>setP(!paused);
 hc.addEventListener('mouseenter',()=>hold=true);hc.addEventListener('mouseleave',()=>hold=false);hc.addEventListener('focusin',()=>hold=true);hc.addEventListener('focusout',()=>hold=false);
