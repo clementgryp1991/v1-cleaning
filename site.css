@@ -336,7 +336,7 @@ p{margin:0 0 1em;max-width:62ch}
 .ft{background:var(--ink-950);color:#F2F4F7}
 .ft a{color:#9AA4B2}.ft a:hover{color:#F2F4F7}
 .sblk.dk,.blk.dk{background:var(--ink-950);color:#F2F4F7}
-.bg-subtle,.facts{background:var(--bg-subtle)}
+
 input,select,textarea{font-size:16px}
 .fld input,.fld textarea,.fld select,.wz input[type=text],.wz input[type=email],.wz input[type=tel],.wz textarea{
   height:40px;padding:0 12px;border:1px solid var(--border-strong);border-radius:8px;background:#fff;color:var(--text);
@@ -350,3 +350,12 @@ input,select,textarea{font-size:16px}
 
 /* carousel play state */
 .hero.paused .ip{/* play triangle via borders */width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent #fff;background:none;border-radius:0}
+
+/* v8 trust-bar light */
+.facts,.prom{background:var(--bg-subtle);color:var(--ink-950)}
+.facts b,.prom b,.fct b{color:var(--ink-950)}
+.facts p,.prom p,.fct p{color:var(--ink-700)}
+.fct{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.fct p{padding:8px 32px;margin:0;border-left:1px solid var(--border)}
+.fct p:first-child{border-left:0;padding-left:0}
+@media(max-width:760px){.fct{grid-template-columns:1fr}.fct p{border-left:0;border-top:1px solid var(--border);padding:16px 0}}
