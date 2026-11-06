@@ -10,7 +10,8 @@
   const { services, sectors, cities, faqs, steps } = DATA;
   const cfg = window.CDW_CONFIG || {};
   const validPublicUrl = value => typeof value === 'string' && (/^https:\/\/[^\s]+$/i.test(value) || /^\/(?!\/)[^\s]*$/.test(value));
-  const canSend = validPublicUrl(cfg.formEndpoint) && validPublicUrl(cfg.privacyUrl);
+  const endpoint = typeof cfg.formEndpoint === 'string' ? cfg.formEndpoint.trim() : '';
+  const canSend = validPublicUrl(endpoint);
   const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cfg.contactEmail || '') ? cfg.contactEmail : '';
   const phone = /^[+0-9 ()-]{5,30}$/.test(cfg.phoneHref || '') ? cfg.phoneHref.replace(/[ ()-]/g, '') : '';
   const byId = id => services.find(s => s.id === id);
@@ -28,7 +29,7 @@
     link.hidden = false;
     if (link.closest('.contact-row')) link.closest('.contact-row').hidden = false;
   });
-  if (canSend) $('#form-mode').hidden = true;
+  if ($('#endpoint-note')) $('#endpoint-note').hidden = canSend;
 
   /* Native dialogs supply focus trapping, Escape and return-to-trigger behaviour. */
   function openDialog(dialog) {
@@ -203,11 +204,13 @@
   }
   pickCity(0);
 
-  /* Quotation wizard: no false success, no permanent browser storage of personal data. */
+  /* Quotation wizard: POST JSON to CDW_CONFIG.formEndpoint. Empty endpoint is a failure, never a fake success. */
   const state={dienst:[],sector:'',opp:'',freq:''};
   const paneList=$$('.pane'),prog=$$('#prog button'),error=$('#err');
-  let step=0,busy=false,request=null,sent=false;
+  let step=0,busy=false,request=null;
   const fields=['bedrijf','naam','email','tel','postcode','msg'];
+  const phoneDisplay=cfg.phoneDisplay||'+32 495 18 36 28';
+  const stepNames=['Dienst en sector','Omvang en postcode','Contact'];
   function values(){return Object.fromEntries(fields.map(name=>[name,$('#f-'+name).value.trim()]));}
   function clearError(){error.classList.remove('on');error.textContent='';$$('#qform [aria-invalid]').forEach(el=>el.removeAttribute('aria-invalid'));}
   function showError(message,field){error.textContent=message;error.classList.add('on');if(field){field.setAttribute('aria-invalid','true');field.focus();}else error.focus();}
@@ -231,26 +234,28 @@
     }));
   }
   function renderTags(id,list,fallback){
-    const target=$(id);target.replaceChildren();
+    const target=$(id);if(!target)return;target.replaceChildren();
     if(!list.length){const empty=document.createElement('span');empty.className='empty';empty.textContent=fallback;target.append(empty);return;}
     list.forEach(text=>{const tag=document.createElement('span');tag.className='t';tag.textContent=text;target.append(tag);});
   }
   function renderSummary(){
     renderTags('#s-dienst',state.dienst,'Nog niet gekozen');renderTags('#s-sector',state.sector?[state.sector]:[],'Nog niet gekozen');renderTags('#s-omvang',[state.opp,state.freq].filter(Boolean),'Nog niet gekozen');
-    const postcode=$('#f-postcode').value.trim();renderTags('#s-loc',postcode?[`Postcode ${postcode}`]:[],'Postcode volgt');
+    const postcode=$('#f-postcode').value.trim();renderTags('#s-loc',postcode?['Postcode '+postcode]:[],'Postcode volgt');
   }
   $('#f-postcode').addEventListener('input',()=>{renderSummary();clearError();});
   $$('input,textarea',$('#qform')).forEach(input=>input.addEventListener('input',clearError));
   function validate(index){
     const v=values();
-    if(index===0&&!state.dienst.length)return ['Kies minstens één dienst.'];
-    if(index===1&&!state.sector)return ['Kies het type locatie.'];
-    if(index===2){
+    if(index===0){
+      if(!state.dienst.length)return ['Kies minstens één dienst.'];
+      if(!state.sector)return ['Kies het type locatie.'];
+    }
+    if(index===1){
       if(!state.opp)return ['Kies de geschatte oppervlakte. Je kunt ook “Weet ik niet” kiezen.'];
       if(!state.freq)return ['Kies hoe vaak je schoonmaak nodig hebt.'];
       if(!/^[1-9]\d{3}$/.test(v.postcode))return ['Vul een Belgische postcode van vier cijfers in.',$('#f-postcode')];
     }
-    if(index===3){
+    if(index===2){
       if(!v.bedrijf)return ['Vul je bedrijfsnaam in.',$('#f-bedrijf')];
       if(!v.naam)return ['Vul de naam van je contactpersoon in.',$('#f-naam')];
       if(!$('#f-email').validity.valid||!v.email)return ['Vul een geldig e-mailadres in.',$('#f-email')];
@@ -258,18 +263,26 @@
     }
     return null;
   }
+  function placeSummary(){
+    const summary=$('.summary'); if(!summary) return;
+    const slot=$('#summary-slot');
+    const narrow=matchMedia('(max-width: 900px)').matches;
+    if(narrow&&step===2&&slot) slot.append(summary);
+    else $('.qgrid').append(summary);
+  }
   function goTo(index,focus=true){
-    step=Math.min(4,Math.max(0,index));
+    step=Math.min(2,Math.max(0,index));
     paneList.forEach(p=>p.classList.toggle('on',Number(p.dataset.pane)===step));
     prog.forEach((button,i)=>{button.classList.toggle('on',i===step);button.classList.toggle('done',i<step);button.disabled=i>step; i===step?button.setAttribute('aria-current','step'):button.removeAttribute('aria-current');});
     $('#back').disabled=step===0||busy;
-    $('#next').innerHTML=(step===3?(canSend?'Aanvraag versturen':'Bekijk je aanvraag'):'Volgende')+icon('arrow');
-    $('#fnav').hidden=step===4;
-    $('#form-mode').hidden=canSend||step===4;
-    $('#step-caption').textContent=step===4?(sent?'Aanvraag verzonden':'Overzicht · nog niet verzonden'):`Stap ${step+1} van 4 · ${['Jouw schoonmaak','Jouw locatie','Omvang & planning','Contactgegevens'][step]}`;
+    $('#next').innerHTML=(step===2?'Aanvraag versturen':'Volgende')+icon('arrow');
+    $('#fnav').hidden=false;
+    $('#step-caption').textContent='Stap '+(step+1)+' van 3 · '+stepNames[step];
+    const fallback=$('#send-fallback'); if(fallback) fallback.hidden=true;
     clearError();
+    placeSummary();
     if(focus){
-      const heading=$('.pane.on h3');heading.tabIndex=-1;heading.focus({preventScroll:true});
+      const heading=$('.pane.on h3'); if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
       const r=$('#qform').getBoundingClientRect();if(r.top<95||r.top>innerHeight*.65)$('#qform').scrollIntoView({behavior:reduceQuery.matches?'instant':'smooth',block:'start'});
     }
   }
@@ -277,61 +290,82 @@
     if(busy)return;
     if(service&&services.some(s=>s.t===service)&&!state.dienst.includes(service))state.dienst.push(service);
     if(sector&&$$('.opts[data-field="sector"] .opt').some(button=>button.dataset.v===sector))state.sector=sector;
-    syncOptions();renderSummary();if(step===4)goTo(0,false);
+    syncOptions();renderSummary();if(step>2)goTo(0,false);
   }
   function buildRequest(){return {...values(),diensten:[...state.dienst],sector:state.sector,oppervlakte:state.opp,frequentie:state.freq,contactToegestaan:$('#f-consent').checked,website:$('#f-website').value};}
   function requestText(){
     if(!request)return '';
-    return ['CDW — OFFERTEAANVRAAG',sent?'Status: verzonden':'Status: opgesteld, niet verzonden','',`Diensten: ${request.diensten.join(', ')}`,`Sector: ${request.sector}`,`Oppervlakte: ${request.oppervlakte}`,`Frequentie: ${request.frequentie}`,`Postcode: ${request.postcode}`,'',`Bedrijf: ${request.bedrijf}`,`Contactpersoon: ${request.naam}`,`E-mail: ${request.email}`,`Telefoon: ${request.tel||'Niet opgegeven'}`,'',`Toelichting: ${request.msg||'Geen'}`,'',`Contact over deze aanvraag toegestaan: ${request.contactToegestaan?'ja':'nee'}`].join('\n');
+    return ['CDW — OFFERTEAANVRAAG','',`Diensten: ${request.diensten.join(', ')}`,`Sector: ${request.sector}`,`Oppervlakte: ${request.oppervlakte}`,`Frequentie: ${request.frequentie}`,`Postcode: ${request.postcode}`,'',`Bedrijf: ${request.bedrijf}`,`Contactpersoon: ${request.naam}`,`E-mail: ${request.email}`,`Telefoon: ${request.tel||'Niet opgegeven'}`,'',`Toelichting: ${request.msg||'Geen'}`,'',`Contact over deze aanvraag toegestaan: ${request.contactToegestaan?'ja':'nee'}`].join('\n');
   }
   function renderResult(){
-    const rows=[['Diensten',request.diensten.join(' · ')],['Locatie & planning',`${request.sector} · ${request.postcode}\n${request.oppervlakte} · ${request.frequentie}`],['Contact',`${request.bedrijf}\n${request.naam}\n${request.email}${request.tel?'\n'+request.tel:''}`]];
+    const rows=[['Diensten',request.diensten.join(' · ')],['Locatie en planning',`${request.sector} · ${request.postcode}\n${request.oppervlakte} · ${request.frequentie}`],['Contact',`${request.bedrijf}\n${request.naam}\n${request.email}${request.tel?'\n'+request.tel:''}`]];
     if(request.msg)rows.push(['Toelichting',request.msg]);
     $('#request-review').innerHTML='<dl>'+rows.map(([label,value])=>`<div><dt>${safe(label)}</dt><dd>${safe(value)}</dd></div>`).join('')+'</dl>';
-    $('#result-title').textContent=sent?'Je aanvraag is verzonden.':'Je aanvraag staat klaar.';
-    $('#result-description').textContent=sent?'Bedankt. CDW neemt contact met je op om de aanvraag te bespreken.':'Er is nog niets verzonden. Download of kopieer je aanvraag om ze verder te gebruiken.';
-    $('#copy-status').textContent='';
-    $('#edit-request').hidden=sent;
-    if(email&&!sent){const link=$('#email-request');link.hidden=false;link.href=`mailto:${email}?subject=${encodeURIComponent('Offerteaanvraag CDW — '+request.bedrijf)}&body=${encodeURIComponent(requestText())}`;}else $('#email-request').hidden=true;
   }
-  function setBusy(value){busy=value;$('#qform').setAttribute('aria-busy',String(value));$$('#qform button,#qform input,#qform textarea').forEach(el=>el.disabled=value);if(!value){prog.forEach((el,i)=>el.disabled=i>step);$('#back').disabled=step===0;}$('#next').innerHTML=value?'Bezig met verzenden…':(step===3?(canSend?'Aanvraag versturen':'Bekijk je aanvraag'):'Volgende')+icon('arrow');}
+  function showSuccess(){
+    step=3;
+    paneList.forEach(p=>p.classList.toggle('on',Number(p.dataset.pane)===3));
+    prog.forEach(button=>{button.classList.remove('on');button.classList.add('done');button.disabled=false;button.removeAttribute('aria-current');});
+    $('#fnav').hidden=true;
+    const fallback=$('#send-fallback'); if(fallback) fallback.hidden=true;
+    $('#step-caption').textContent='Aanvraag verzonden';
+    clearError();
+    placeSummary();
+    const heading=$('#result-title'); if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+  }
+  function showFallback(){
+    const box=$('#send-fallback'); if(!box||!request) return;
+    box.hidden=false;
+    const link=$('#email-request');
+    const subject=encodeURIComponent('Offerteaanvraag CDW — '+(request.bedrijf||''));
+    const body=encodeURIComponent(requestText());
+    const missing=$('#email-missing');
+    if(email){link.href='mailto:'+email+'?subject='+subject+'&body='+body; if(missing) missing.hidden=true;}
+    else {link.href='mailto:?subject='+subject+'&body='+body; if(missing) missing.hidden=false;}
+  }
+  function setBusy(value){
+    busy=value;
+    $('#qform').setAttribute('aria-busy',String(value));
+    $$('#qform button,#qform input,#qform textarea').forEach(el=>{el.disabled=value;});
+    if(!value){prog.forEach((el,i)=>{el.disabled=step<3&&i>step;});$('#back').disabled=step===0||step>2;}
+    $('#next').innerHTML=value?'Bezig met verzenden…':((step===2?'Aanvraag versturen':'Volgende')+icon('arrow'));
+  }
   async function next(){
-    if(busy||step===4)return;
+    if(busy||step>2)return;
     const problem=validate(step);if(problem){showError(...problem);return;}
-    if(step<3){goTo(step+1);return;}
-    // Revalidate earlier steps before making any network request.
-    for(let i=0;i<4;i++){const earlier=validate(i);if(earlier){goTo(i);showError(...earlier);return;}}
-    request=buildRequest();sent=false;
-    if(request.website){showError('Je aanvraag kon niet worden verwerkt. Probeer opnieuw.');return;}
-    if(!canSend){renderResult();goTo(4);return;}
-    setBusy(true);const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),Math.min(30000,Math.max(3000,Number(cfg.requestTimeoutMs)||15000)));
+    if(step<2){goTo(step+1);return;}
+    for(let i=0;i<3;i++){const earlier=validate(i);if(earlier){goTo(i);showError(...earlier);return;}}
+    request=buildRequest();
+    if(request.website){showError('Je aanvraag kon niet worden verwerkt. Bel ons op '+phoneDisplay+'.');return;}
+    if(!canSend){
+      showError('We konden je aanvraag niet versturen. [INVULLEN: formulier-endpoint] Bel ons op '+phoneDisplay+'.');
+      showFallback();
+      return;
+    }
+    setBusy(true);
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),Math.min(30000,Math.max(3000,Number(cfg.requestTimeoutMs)||15000)));
     try{
-      const response=await fetch(cfg.formEndpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'omit',body:JSON.stringify({...request,source:'cdw-website',version:2}),signal:controller.signal});
-      const result=await response.json().catch(()=>null);
-      if(!response.ok||!result||result.ok!==true)throw new Error('unconfirmed');
-      sent=true;setBusy(false);renderResult();goTo(4);
-    }catch(error){setBusy(false);showError(error.name==='AbortError'?'De verbinding duurde te lang. Er is geen bevestiging ontvangen. Je gegevens blijven staan; controleer eerst of de aanvraag toch werd ontvangen voordat je opnieuw probeert.':'We konden de verzending niet bevestigen. Je gegevens blijven staan. Probeer opnieuw of neem rechtstreeks contact op.');}
-    finally{clearTimeout(timeout);}
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'omit',body:JSON.stringify({...request,website:undefined,source:'cdw-website',version:3}),signal:controller.signal});
+      if(!response.ok) throw new Error('unconfirmed');
+      setBusy(false);renderResult();showSuccess();
+    }catch(err){
+      setBusy(false);
+      showError(err&&err.name==='AbortError'
+        ? 'De verbinding duurde te lang. Er is niets bevestigd. Je gegevens blijven staan. Bel ons op '+phoneDisplay+'.'
+        : 'We konden de verzending niet bevestigen. Je gegevens blijven staan. Bel ons op '+phoneDisplay+'.');
+      showFallback();
+    }finally{clearTimeout(timeout);}
   }
   $('#next').onclick=next;
-  $('#back').onclick=()=>{if(!busy&&step>0)goTo(step-1);};
-  prog.forEach((button,i)=>button.onclick=()=>{if(!busy&&i<step)goTo(i);});
+  $('#back').onclick=()=>{if(!busy&&step>0&&step<=2)goTo(step-1);};
+  prog.forEach((button,i)=>button.onclick=()=>{if(!busy&&step<=2&&i<step)goTo(i);});
   $('#qform').addEventListener('submit',e=>{e.preventDefault();next();});
   $('#qform').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input:not([type="checkbox"])')){e.preventDefault();next();}});
-  $('#edit-request').onclick=()=>goTo(3);
   $('#reset').onclick=()=>{
-    if(busy)return;state.dienst=[];state.sector=state.opp=state.freq='';HTMLFormElement.prototype.reset.call($('#qform'));request=null;sent=false;syncOptions();renderSummary();$('#request-review').replaceChildren();$('#copy-status').textContent='';goTo(0);
+    if(busy)return;state.dienst=[];state.sector=state.opp=state.freq='';HTMLFormElement.prototype.reset.call($('#qform'));request=null;syncOptions();renderSummary();$('#request-review').replaceChildren();const fallback=$('#send-fallback'); if(fallback) fallback.hidden=true;goTo(0);
   };
-  $('#download-request').onclick=()=>{
-    const blob=new Blob(['\uFEFF'+requestText()],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='CDW-offerteaanvraag.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  };
-  $('#copy-request').onclick=async()=>{
-    let copied=false;
-    try{await navigator.clipboard.writeText(requestText());copied=true;}catch(_){
-      const area=document.createElement('textarea');area.value=requestText();area.style.cssText='position:fixed;top:0;left:-9999px';document.body.append(area);area.select();try{copied=document.execCommand('copy');}catch(_){}area.remove();$('#copy-request').focus();
-    }
-    $('#copy-status').textContent=copied?'Aanvraag gekopieerd. Plak ze in je e-mail of document.':'Kopiëren is hier niet beschikbaar. Gebruik “Download aanvraag”.';
-  };
+  addEventListener('resize',()=>{if(!busy)placeSummary();},{passive:true});
   syncOptions();renderSummary();goTo(0,false);
 
   /* Search only changes location on an explicit selection; no hidden preselection. */
@@ -366,7 +400,7 @@
     if(button.dataset.policy==='privacy'){
       if(canSend&&validPublicUrl(cfg.privacyUrl)){window.open(cfg.privacyUrl,'_blank','noopener,noreferrer');return;}
       $('#policy-title').textContent='Privacy-informatie';
-      $('#policy-content').innerHTML='<p class="policy-note"><strong>Voorbeeldwebsite.</strong> De online verzending is nog niet geactiveerd. Dit is technische informatie over deze versie, geen definitieve privacyverklaring.</p><h3>Gegevens in het formulier</h3><p>Je invoer blijft in deze pagina. De website bewaart de formuliergegevens niet in cookies of lokale browseropslag en verstuurt ze niet naar een server. Bij downloaden of kopiëren bepaal je zelf waar je de aanvraag bewaart of deelt.</p><h3>Vóór publicatie</h3><p>De eigenaar moet de contactgegevens, formulierverwerking en definitieve privacyverklaring bevestigen. Zodra de koppeling is geactiveerd, moet de gepubliceerde privacyverklaring de werkelijke verwerking beschrijven.</p>';
+      $('#policy-content').innerHTML='<p class="policy-note"><strong>Concept.</strong> Dit is technische informatie over deze versie, geen definitieve privacyverklaring.</p><h3>Gegevens in het formulier</h3><p>Je invoer blijft in deze pagina tot je verzendt. De website bewaart de formuliergegevens niet in cookies of lokale browseropslag. Staat het formulier-endpoint leeg, dan gaat er niets naar een server. Met “E-mail voorbereiden” open je je eigen e-mailprogramma; wat je daarna verstuurt, bepaal je zelf.</p><h3>Vóór publicatie</h3><p>De eigenaar moet het formulier-endpoint, het e-mailadres voor offertes en de definitieve privacyverklaring invullen. Zodra de koppeling actief is, moet de gepubliceerde privacyverklaring de werkelijke verwerking beschrijven.</p>';
     }else{
       $('#policy-title').textContent='Cookies & techniek';
       $('#policy-content').innerHTML='<p>Deze versie bevat geen analytics, advertentiepixels of trackingcookies. Er wordt ook geen cookievoorkeur opgeslagen. Daarom verschijnt er geen overbodige toestemmingsbanner.</p><h3>Lettertypes en afbeeldingen</h3><p>De lettertypes Montserrat en Figtree worden via Google Fonts geladen. Daarbij maakt je browser verbinding met die dienst. Alle websitefoto’s en logo’s zitten in het websitepakket.</p><h3>Bij latere uitbreidingen</h3><p>Deze informatie moet opnieuw worden nagekeken als analytics, externe video’s, een klantenportaal of andere externe diensten worden toegevoegd.</p>';
