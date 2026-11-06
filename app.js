@@ -397,17 +397,13 @@
       $('#policy-content').innerHTML='<p class="policy-note"><strong>Concept.</strong> Dit is technische informatie over deze versie, geen definitieve privacyverklaring.</p><h3>Gegevens in het formulier</h3><p>Je invoer blijft in deze pagina tot je verzendt. De website bewaart de formuliergegevens niet in cookies of lokale browseropslag. Staat het formulier-endpoint leeg, dan gaat er niets naar een server. Met “E-mail voorbereiden” open je je eigen e-mailprogramma; wat je daarna verstuurt, bepaal je zelf.</p><h3>Vóór publicatie</h3><p>De eigenaar moet het formulier-endpoint, het e-mailadres voor offertes en de definitieve privacyverklaring invullen. Zodra de koppeling actief is, moet de gepubliceerde privacyverklaring de werkelijke verwerking beschrijven.</p>';
     }else{
       $('#policy-title').textContent='Cookies & techniek';
-      $('#policy-content').innerHTML='<p>Deze versie bevat geen analytics, advertentiepixels of trackingcookies. Er wordt ook geen cookievoorkeur opgeslagen. Daarom verschijnt er geen overbodige toestemmingsbanner.</p><h3>Lettertypes en afbeeldingen</h3><p>De lettertypes Montserrat en Figtree worden via Google Fonts geladen. Daarbij maakt je browser verbinding met die dienst. Alle websitefoto’s en logo’s zitten in het websitepakket.</p><h3>Bij latere uitbreidingen</h3><p>Deze informatie moet opnieuw worden nagekeken als analytics, externe video’s, een klantenportaal of andere externe diensten worden toegevoegd.</p>';
+      $('#policy-content').innerHTML='<p>Deze versie bevat geen analytics, advertentiepixels of trackingcookies. Er wordt ook geen cookievoorkeur opgeslagen. Daarom verschijnt er geen overbodige toestemmingsbanner.</p><h3>Lettertypes en afbeeldingen</h3><p>De lettertypes Montserrat en Figtree staan op deze website zelf. Alle websitefoto’s en logo’s zitten in het websitepakket.</p><h3>Bij latere uitbreidingen</h3><p>Deze informatie moet opnieuw worden nagekeken als analytics, externe video’s, een klantenportaal of andere externe diensten worden toegevoegd.</p>';
     }
     $('#policy-content').insertAdjacentHTML('beforeend', button.dataset.policy==='privacy' ? '<p style="margin-top:18px"><a class="link" href="privacy/">Lees het conceptprivacybeleid →</a></p>' : '<p style="margin-top:18px"><a class="link" href="cookies/">Lees het conceptcookiebeleid →</a></p>');
     openDialog($('#policy-dialog'));
   }));
 
-  /* Light entry motion only; all essential content remains present without JavaScript. */
-  if(!reduceQuery.matches&&'IntersectionObserver' in window){
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in');observer.unobserve(entry.target);}}),{threshold:.06});
-    $$('.reveal').forEach(el=>{if(el.getBoundingClientRect().top>innerHeight)observer.observe(el);});
-  }
+  /* Reveal runs once, in core.js. */
   /* Preselection from detail pages (?dienst=slug / ?sector=Naam). */
   try{const qp=new URLSearchParams(location.search);const qd=qp.get('dienst'),qs=qp.get('sector');
     const id=qd&&(Object.keys(PAGE).find(k=>PAGE[k]===qd)||({vloeronderhoud:'vloer','dakgoten-reinigen':'gevel',dakontmossing:'gevel'})[qd]);

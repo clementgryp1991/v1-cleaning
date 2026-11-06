@@ -40,6 +40,11 @@
       sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
     }
   }
+  /* One reveal observer for every page, including the homepage. */
+  if (!reduce.matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .06 });
+    $$('.reveal').forEach(el => { if (el.getBoundingClientRect().top > innerHeight) io.observe(el); });
+  }
   if (document.body.dataset.page === 'home') return; /* home uses app.js */
 
   const open = d => { if (d && !d.open) d.showModal(); };
@@ -130,9 +135,4 @@
     document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); pal.open ? close(pal) : (!$('dialog[open]') && openSearch()); } });
   }
 
-  /* Gentle reveal */
-  if (!reduce.matches && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .06 });
-    $$('.reveal').forEach(el => { if (el.getBoundingClientRect().top > innerHeight) io.observe(el); });
-  }
 })();
