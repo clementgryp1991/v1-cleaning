@@ -1313,6 +1313,22 @@ body.home .usp{margin-top:32px}
   footer li{break-inside:avoid}
   footer a{line-height:1.35}
 }
+/* Navigation: one mobile CTA layer, stable logo, 44px targets, consistent comparison marks. */
+.mega{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mega li a{min-height:44px}
+.card-actions .go,.card-quote{min-height:44px;display:inline-flex;align-items:center}
+.report-tabs button{min-width:44px;min-height:44px;padding:8px 12px}
+.burger,.kbtn,.mobile .close{width:44px;height:44px}
+.mobile-cta{display:flex;flex-direction:row;flex-wrap:nowrap;gap:8px;margin:8px 0 12px}
+.mobile .mobile-cta a,.mobile .mobile-cta .btn,.mobile .mobile-cta .mphone{flex:1 1 0;min-height:48px;max-height:52px;margin:0!important;padding:10px 12px;font-size:1rem!important;font-weight:700;border-bottom:0;line-height:1.2;justify-content:center}
+.cmp .part i{background:#D5DBE6;color:#3E4A63;font-style:normal;font-family:var(--display);font-weight:800}
+.cmp .part i svg{display:none}
+.cmp .part i::after{content:"~"}
+@media(max-width:1000px){
+  .nav .logo img,.nav.scrolled .logo img{width:112px;height:auto}
+  .nav-tel{display:none}
+  .mbar{padding-right:max(16px,calc(var(--sar) + 10px))!important;padding-left:max(16px,calc(var(--sal) + 10px))!important}
+}
 /* Hero: chips sit on the copy, van lettering stays out of the text column. */
 @media(max-width:700px){
   .vcopy{margin-bottom:0;padding-bottom:8px}
