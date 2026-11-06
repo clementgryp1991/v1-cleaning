@@ -16,7 +16,7 @@
   const phone = /^[+0-9 ()-]{5,30}$/.test(cfg.phoneHref || '') ? cfg.phoneHref.replace(/[ ()-]/g, '') : '';
   const byId = id => services.find(s => s.id === id);
   const PAGE = {ramen:'ramen-en-glas',zonnepanelen:'zonnepanelen',drone:'zonnepanelen-drone',gevel:'gevel-en-dakreiniging',oplevering:'opleveringsschoonmaak',eind:'eindschoonmaak',kantoor:'kantoorschoonmaak',winkel:'winkelschoonmaak',industrie:'industriele-schoonmaak',vloer:'vloerreiniging',machine:'productie-en-machinereiniging',diepte:'dieptereiniging'};
-  const CITYPAGE = {'Gent':'gent','Brugge':'brugge','Zeebrugge':'zeebrugge','Oostende':'oostende','Ieper':'ieper','Roeselare':'roeselare','Kortrijk':'kortrijk','Sint-Niklaas':'sint-niklaas','Aalst':'aalst','Waregem':'waregem','Eeklo':'eeklo'};
+  const CITYPAGE = {'Gent':'gent','Brugge':'brugge','Zeebrugge':'zeebrugge','Oostende':'oostende','Ieper':'ieper','Roeselare':'roeselare','Kortrijk':'kortrijk','Sint-Niklaas':'sint-niklaas','Aalst':'aalst','Waregem':'waregem','Eeklo':'eeklo','Antwerpen':'antwerpen','Mechelen':'mechelen','Turnhout':'turnhout','Leuven':'leuven','Hasselt':'hasselt','Genk':'genk'};
   document.documentElement.classList.add('js');
 
   /* Contact details are never invented. Empty settings hide dummy links. */
