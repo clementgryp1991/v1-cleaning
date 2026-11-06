@@ -95,56 +95,6 @@
     if (e.key === 'Escape' && megaOwner.classList.contains('open')) { toggleMega(false); megaButton.focus(); }
   });
 
-  /* Hero: a crisp approved image first. Rotation is opt-in, never forced. */
-  const heroItems = [
-    { ic: 'pin', img: 'img/hero-cdw.webp', t: 'Ter plaatse in heel Vlaanderen', d: 'Van één kantoor tot een volledige bedrijfssite. Je vaste aanspreekpunt regelt de planning en de ploeg.' },
-    { ...services[0], img: 'img/hero-glasreiniging.webp' },
-    services[1], services[2], services[4], services[8]
-  ];
-  const screen = $('#screen'), bars = $('#bars'), herobg = $('#herobg'), showcase = $('#show');
-  let slide = 0, slideTimer = 0, playing = false, hovered = false, heroVisible = true;
-  heroItems.forEach((item, i) => {
-    if (i) { const picture = document.createElement('picture'); picture.className = 'hero-picture'; picture.dataset.src = item.img; herobg.append(picture); }
-    const panel = document.createElement('div');
-    panel.className = 'slide' + (i === 0 ? ' on' : '');
-    panel.id = `hero-panel-${i}`; panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', `hero-tab-${i}`); panel.hidden = i !== 0;
-    panel.innerHTML = `<div class="head"><div class="ico">${icon(item.ic)}</div><div><span class="num">${String(i+1).padStart(2,'0')} / 06 · Uitgelicht</span><h3>${safe(item.t)}</h3></div></div><p>${safe(item.d)}</p><a class="go" href="${item.id ? '#offerte' : '#regio'}">${item.id ? 'Offerte voor deze dienst' : 'Bekijk ons werkgebied'} ${icon('arrow')}</a>`;
-    if (item.id) $('.go', panel).onclick = () => preselect(item.t, null);
-    screen.append(panel);
-    const tab = document.createElement('button'); tab.type = 'button'; tab.id = `hero-tab-${i}`; tab.setAttribute('role','tab'); tab.setAttribute('aria-label',item.t); tab.setAttribute('aria-controls',panel.id); tab.onclick = () => { playing = false; goSlide(i); }; bars.append(tab);
-  });
-  function scheduleSlide() {
-    clearTimeout(slideTimer);
-    const active = playing && !reduceQuery.matches && !hovered && !document.hidden && heroVisible && (!showcase.contains(document.activeElement) || document.activeElement === $('#playslides'));
-    showcase.classList.toggle('is-playing', active);
-    if (active) slideTimer = setTimeout(() => goSlide(slide + 1), 7000);
-    const control = $('#playslides');
-    control.setAttribute('aria-pressed', String(playing));
-    control.setAttribute('aria-label', playing ? 'Automatisch afspelen pauzeren' : 'Automatisch afspelen');
-    control.firstElementChild.textContent = playing ? 'Ⅱ' : '▶';
-    control.disabled = reduceQuery.matches;
-  }
-  function goSlide(index) {
-    slide = (index + heroItems.length) % heroItems.length;
-    $$('.slide', screen).forEach((p,i) => { p.hidden = i !== slide; p.classList.toggle('on', i === slide); });
-    $$('.hero-picture', herobg).forEach((picture,i) => {
-      if (i === slide && picture.dataset.src && !picture.firstChild) { const img = new Image(); img.src = picture.dataset.src; img.alt = ''; img.decoding = 'async'; picture.append(img); }
-      picture.classList.toggle('on',i === slide);
-    });
-    $$('button',bars).forEach((button,i) => { button.classList.toggle('on',i === slide); button.setAttribute('aria-selected',String(i === slide)); button.tabIndex = i === slide ? 0 : -1; });
-    $('#showcount').textContent = String(slide+1).padStart(2,'0') + ' / 06';
-    scheduleSlide();
-  }
-  $('#prevslide').onclick = () => { playing = false; goSlide(slide-1); };
-  $('#nextslide').onclick = () => { playing = false; goSlide(slide+1); };
-  $('#playslides').onclick = () => { playing = !playing; hovered = false; scheduleSlide(); };
-  showcase.addEventListener('mouseenter', () => { hovered = true; scheduleSlide(); });
-  showcase.addEventListener('mouseleave', () => { hovered = false; scheduleSlide(); });
-  showcase.addEventListener('focusin', scheduleSlide);
-  showcase.addEventListener('focusout', () => setTimeout(scheduleSlide, 0));
-  document.addEventListener('visibilitychange', scheduleSlide);
-  reduceQuery.addEventListener('change', () => { if (reduceQuery.matches) playing = false; scheduleSlide(); });
-  if ('IntersectionObserver' in window) new IntersectionObserver(entries => { heroVisible = entries[0].isIntersecting; scheduleSlide(); }).observe($('#top'));
   function tabArrows(container, selector, callback) {
     container.addEventListener('keydown', e => {
       const tabs = $$(selector,container), current = tabs.indexOf(document.activeElement);
@@ -158,8 +108,6 @@
       e.preventDefault(); callback(next,tabs[next]); tabs[next].focus();
     });
   }
-  tabArrows(bars,'button',i => { playing = false; goSlide(i); });
-  goSlide(0);
 
   /* Services retain the original twelve entries and filter groups. */
   function setFilter(value, announce = true) {
