@@ -302,9 +302,9 @@ img{max-width:100%;display:block}
 @media(max-width:620px){.sectors{grid-template-columns:1fr 1fr}.sector{min-height:180px}}
 
 /* ---------- map ---------- */
-.mapwrap{display:grid;grid-template-columns:1.25fr .75fr;gap:32px;align-items:stretch}
+.mapwrap{display:grid;grid-template-columns:1.25fr .75fr;gap:32px;align-items:start}
 .map{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow);position:relative}
-.map svg{width:100%;height:auto;display:block}
+.map svg{width:100%;height:auto;display:block;aspect-ratio:700/320}
 .map .land{fill:var(--surface-2);stroke:var(--line-2);stroke-width:1.5;stroke-linejoin:round}
 .map .border{stroke:var(--line-2);stroke-width:1.5;stroke-dasharray:4 5;fill:none}
 .map .sea{fill:none;stroke:var(--pink-soft);stroke-width:2;stroke-dasharray:2 6;stroke-linecap:round}
@@ -1269,6 +1269,50 @@ body.home .usp{margin-top:32px}
 .ihero + .blk,.ihero + .sblk{padding-top:clamp(44px,6vw,88px)}
 .sblk h2,.blk h2{text-wrap:balance}
 .vcopy .eyebrow{flex-wrap:wrap;column-gap:.42em;row-gap:4px}.vcopy .eyebrow::before{margin-right:.2em}@media(max-width:700px){.vcopy .eyebrow{font-size:.75rem;letter-spacing:.08em}}
+/* Mobile length: compact services, no map, one comparison column, steps without a side panel. */
+.steps{grid-template-columns:1fr}
+.step .desc{max-height:none;opacity:1}
+.cmp-radio{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.cmp-pick{display:none}
+@media(max-width:700px){
+  .sec{padding-block:28px}
+  #sgrid.sgrid{display:flex;flex-direction:column;gap:8px}
+  #sgrid .scard{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr);align-items:center;gap:8px;min-height:48px;padding:8px 40px 8px 10px;margin:0}
+  #sgrid .scard .media,#sgrid .scard>p,#sgrid .scard .cat,#sgrid .scard .card-quote{display:none}
+  #sgrid .scard .top{display:flex;margin:0;padding:0;grid-column:1;grid-row:1}
+  #sgrid .scard .ic{width:36px;height:36px;min-width:36px}
+  #sgrid .scard h3{margin:0;font-size:1rem;line-height:1.25;grid-column:2;grid-row:1}
+  #sgrid .scard .card-actions{border:0;margin:0;padding:0}
+  #sgrid .scard .go{position:absolute;inset:0;min-height:52px;font-size:0;color:transparent}
+  #sgrid .scard .go svg{position:absolute;right:14px;top:50%;width:18px;height:18px;margin:0;transform:translateY(-50%);color:var(--navy)}
+  .map{display:none}
+  .mapinfo .card .van{display:none}
+  .about .cols{grid-template-columns:1fr}
+  .cmp-pick{display:flex;gap:8px;margin-bottom:12px}
+  .cmp-pick label{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 10px;border-radius:999px;border:1px solid var(--line-2);background:#fff;font-weight:700;text-align:center}
+  #cmp-a:checked ~ .cmp-pick label[for="cmp-a"],#cmp-b:checked ~ .cmp-pick label[for="cmp-b"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+  #cmp-a:focus-visible ~ .cmp-pick label[for="cmp-a"],#cmp-b:focus-visible ~ .cmp-pick label[for="cmp-b"]{outline:3px solid var(--pink);outline-offset:3px}
+  #cmp-a:checked ~ .cmp th:nth-child(4),#cmp-a:checked ~ .cmp td:nth-child(4),#cmp-b:checked ~ .cmp th:nth-child(3),#cmp-b:checked ~ .cmp td:nth-child(3){display:none}
+  .cmp{max-width:100%;overflow:hidden}
+  .cmp table{min-width:0;width:100%;table-layout:fixed}
+  .cmp th,.cmp td{overflow-wrap:anywhere;padding:10px 8px}
+  .sector{min-height:0;display:flex;align-items:center;padding:12px 14px}
+  .sectors{display:flex;flex-direction:column;gap:8px}
+  .sector .art,.sector p,.sector .arrow{display:none}
+  .sector .in{position:static;padding:0}
+  .sector h3{margin:0;font-size:1rem}
+  .report-preview,.report-disclaimer{display:none}
+  .about .visual{display:none}
+  .about{gap:0}
+  .vhero{min-height:0}
+  .qgrid,.form,.pane,.opts,.opt{min-width:0;max-width:100%}
+  .opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .opt{min-height:44px;overflow-wrap:anywhere}
+  footer .cols{gap:20px 16px}
+  footer ul{gap:2px;columns:2;column-gap:16px}
+  footer li{break-inside:avoid}
+  footer a{line-height:1.35}
+}
 /* Hero: chips sit on the copy, van lettering stays out of the text column. */
 @media(max-width:700px){
   .vcopy{margin-bottom:0;padding-bottom:8px}
