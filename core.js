@@ -58,7 +58,10 @@
     vh.addEventListener('focusout', () => setTimeout(() => { focus = vh.contains(document.activeElement); plan(); }, 0));
     document.addEventListener('visibilitychange', plan);
     rm.addEventListener?.('change', () => { if (rm.matches) { paused = true; go(0); } else plan(); });
-    if ('IntersectionObserver' in window) new IntersectionObserver(e => { seen = e[0].isIntersecting; document.body.classList.toggle('hero-in', e[0].intersectionRatio > .35); plan(); }, { threshold: [0, .35, .6] }).observe(vh);
+    if ('IntersectionObserver' in window) new IntersectionObserver(e => { seen = e[0].isIntersecting; plan(); }, { threshold: [0, .35, .6] }).observe(vh);
+    const strip = vh.querySelector('.vstrip');
+    if (strip && 'IntersectionObserver' in window) new IntersectionObserver(e => document.body.classList.toggle('hero-out', !e[0].isIntersecting)).observe(strip);
+    else document.body.classList.add('hero-out');
     load(slides[1]); plan();
     /* icon strip: arrow only when it overflows */
     const sc = vh.querySelector('.vscroll'), more = vh.querySelector('.vmore');

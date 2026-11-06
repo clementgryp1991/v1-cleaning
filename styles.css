@@ -1207,4 +1207,42 @@ body.home .nav.scrolled{background:rgba(10,30,64,.94);-webkit-backdrop-filter:bl
 .sblk h2,.blk h2{font-size:clamp(1.7rem,3vw,2.5rem)}
 .btn-ghost,.btn-ghost-light,.btn-pink{border-radius:999px}
 .blk .eyebrow,.sblk .eyebrow{margin-bottom:10px}
-.cfab{transition:opacity .25s,transform .25s}body.hero-in .cfab{opacity:0;pointer-events:none;transform:scale(.8)}
+.cfab{transition:opacity .25s,transform .25s}body.home:not(.hero-out) .cfab{opacity:0;pointer-events:none;visibility:hidden;transform:scale(.8)}
+
+/* ===================== v10.2 — layout & UX polish after visual audit ===================== */
+/* Home hero: copy centred in the space above the controls/strip, not glued to the bottom */
+.vhero{justify-content:flex-start}
+.vcopy{margin-top:auto;margin-bottom:auto;padding-block:clamp(16px,4vh,48px)}
+.vhero h1{font-size:clamp(2.35rem,calc(1.2rem + 4.6vw),5rem);text-wrap:balance}
+.vhero .lead{text-wrap:pretty}
+.eyebrow .nw{white-space:nowrap}
+.vctrl{flex-shrink:0}
+.vstripw{flex-shrink:0}
+@media(max-width:620px){
+  .vhero{padding-top:calc(var(--sat) + 80px)}
+  .vcopy{padding-block:8px 18px}
+  .vcopy .eyebrow{font-size:.64rem;letter-spacing:.12em}
+  .vhero .lead{margin-top:14px;font-size:1rem}
+  .vhero .cta{margin-top:22px;gap:10px}
+  .vctrl{justify-content:space-between}
+}
+@media(max-width:420px){.vdots{display:none}.vctrl{justify-content:flex-end}.vchip{min-height:72px;padding:10px 8px;gap:6px}.vchip svg{width:22px;height:22px}}
+@media(max-width:360px){.vhero h1{font-size:2.1rem}.vhero .btn{padding-block:12px}}
+@media(min-width:621px) and (max-width:1100px){.vhero h1{font-size:clamp(3rem,7vw,4.4rem)}.vhero .lead{max-width:40ch}}
+/* strip: arrow never covers a chip */
+.vscroll{scroll-padding-inline:8px;overscroll-behavior-x:contain}
+.vmore{position:static}
+
+/* Inner heroes: smaller, balanced display titles; long Dutch compounds break cleanly */
+.ihero h1{font-size:clamp(1.45rem,calc(.6rem + 4.4vw),3.4rem);max-width:18ch;text-wrap:balance;hyphens:manual;overflow-wrap:break-word;line-height:1.06}
+.ihero .lead{text-wrap:pretty}
+.ihero .wrap{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}
+.ihero-copy{min-width:0}
+.ihero .shot{align-self:center}
+@media(max-width:1000px){.ihero .wrap{grid-template-columns:1fr}.ihero .shot{max-width:640px;aspect-ratio:724/241;max-height:none}}
+@media(max-width:620px){.ihero .wrap{padding-block:28px 44px}.ihero .crumbs{margin-bottom:14px}.ihero .lead{margin-top:14px}.ihero .cta{margin-top:22px}}
+/* consistent section rhythm */
+.blk,.sblk{padding-block:clamp(48px,6.5vw,96px)}
+.ihero + .blk,.ihero + .sblk{padding-top:clamp(44px,6vw,88px)}
+.sblk h2,.blk h2{text-wrap:balance}
+.vcopy .eyebrow{flex-wrap:wrap;column-gap:.42em;row-gap:4px}.vcopy .eyebrow::before{margin-right:.2em}@media(max-width:620px){.vcopy .eyebrow{font-size:.6rem;letter-spacing:.1em}}
