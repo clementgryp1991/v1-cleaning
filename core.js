@@ -24,8 +24,14 @@
   const syncLock = () => lock(!!$('dialog[open]'));
   $$('dialog').forEach(d => new MutationObserver(syncLock).observe(d, { attributes: true, attributeFilter: ['open'] }));
 
-  /* Videos (if ever enabled): always inline + muted on iPhone. */
-  $$('video').forEach(v => { v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', ''); if (reduce.matches) { v.removeAttribute('autoplay'); v.pause(); } });
+  /* Hero and any other video: inline, muted. Reduced motion keeps the poster. */
+  const syncVideo = v => {
+    v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
+    if (reduce.matches) { v.removeAttribute('autoplay'); v.pause(); }
+    else if (v.autoplay || v.hasAttribute('autoplay')) v.play().catch(() => {});
+  };
+  $$('video').forEach(syncVideo);
+  reduce.addEventListener?.('change', () => $$('video').forEach(syncVideo));
 
   /* Static hero: keep the chip scroller and the hero-out flag. No carousel. */
   const vh = document.querySelector('.vhero');

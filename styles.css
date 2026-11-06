@@ -1208,20 +1208,14 @@ body.home .nav.scrolled{background:rgba(10,30,64,.94);-webkit-backdrop-filter:bl
 @media(max-width:1000px){.vhero{padding-top:calc(var(--sat) + 84px)}.vctrl{justify-content:flex-start}}
 @media(max-width:700px){.vhero h1{font-size:clamp(2.4rem,12vw,3.4rem)}.vhero .cta{display:grid}.vhero .cta .btn{width:100%}.vshade{background:linear-gradient(0deg,rgba(6,20,48,.95) 0%,rgba(10,30,64,.75) 55%,rgba(10,30,64,.55) 100%)}.vchip{flex-basis:104px;min-height:80px;font-size:.76rem}.vctrl{margin-bottom:10px}.vdots button{width:22px}}
 @media(prefers-reduced-motion:reduce){.vs{transition:none}.vhero.playing .vs.on img{animation:none}}
-/* Proof strip overlaps the hero; USP sits below it with breathing room. */
+/* USP cards overlap the hero by 48px; the extra hero padding keeps the chips clear. */
 .vhero{padding-bottom:calc(72px + var(--sab))}
-.proofstrip{position:relative;z-index:3;margin-top:-48px}
-.proofstrip .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 20px;background:#fff;color:var(--navy);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px 22px}
-.proofstrip span{display:block;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.proofstrip b{display:block;margin-top:6px;font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.35;overflow-wrap:anywhere}
-body.home .usp{margin-top:32px}
+body.home .usp{margin-top:-48px}
 .vhero h1{max-width:18ch}
 @media(max-width:700px){
   .vcopy{margin-bottom:0;padding-bottom:0}
   .vstripw{margin-top:12px}
-  .vs img{object-position:0% 40%}
-  .vshade{background:linear-gradient(180deg,rgba(6,20,48,.86) 0%,rgba(6,20,48,.92) 42%,rgba(6,20,48,.96) 100%)}
-  .proofstrip .wrap{grid-template-columns:1fr 1fr}
+  .vshade{background:linear-gradient(180deg,rgba(6,20,48,.78) 0%,rgba(6,20,48,.55) 42%,rgba(6,20,48,.88) 100%)}
 }
 
 /* Inner page heroes: photo + navy overlay, same hierarchy as home */
@@ -1342,6 +1336,7 @@ body.home .usp{margin-top:32px}
 @media(max-width:700px){
   .vcopy{margin-bottom:0;padding-bottom:8px}
   .vstripw{margin-top:8px}
-  .vs img{object-position:center 45%}
-  .vshade{background:linear-gradient(180deg,rgba(6,20,48,.94) 0%,rgba(6,20,48,.97) 42%,rgba(6,20,48,.99) 100%)}
+  .vshade{background:linear-gradient(180deg,rgba(6,20,48,.8) 0%,rgba(6,20,48,.58) 40%,rgba(6,20,48,.9) 100%)}
 }
+.vslides video,.vslides .vposter{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+@media(prefers-reduced-motion:reduce){.vhero video{display:none}}
