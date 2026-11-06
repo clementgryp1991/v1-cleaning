@@ -27,47 +27,16 @@
   /* Videos (if ever enabled): always inline + muted on iPhone. */
   $$('video').forEach(v => { v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', ''); if (reduce.matches) { v.removeAttribute('autoplay'); v.pause(); } });
 
-  /* v10.1 hero: fast photo crossfade (~3s), pauses on hover/focus/manual use, off for reduced motion */
-  const vh = document.querySelector('[data-carousel]');
+  /* Static hero: keep the chip scroller and the hero-out flag. No carousel. */
+  const vh = document.querySelector('.vhero');
   if (vh) {
-    const slides = [...vh.querySelectorAll('.vs')], dots = [...vh.querySelectorAll('.vdots button')], pbtn = vh.querySelector('.vpause');
-    const rm = matchMedia('(prefers-reduced-motion: reduce)');
-    let cur = 0, timer = 0, paused = rm.matches, hover = false, focus = false, seen = true;
-    const load = s => { if (s && s.dataset.src && !s.firstChild) { const im = new Image(); im.src = s.dataset.src; im.alt = ''; im.decoding = 'async'; s.append(im); } };
-    const go = i => {
-      cur = (i + slides.length) % slides.length;
-      slides.forEach((s, k) => s.classList.toggle('on', k === cur));
-      dots.forEach((d, k) => k === cur ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current'));
-      load(slides[cur]); load(slides[(cur + 1) % slides.length]);
-      plan();
-    };
-    const plan = () => {
-      clearTimeout(timer);
-      const run = !paused && !hover && !focus && seen && !document.hidden && !rm.matches;
-      vh.classList.toggle('playing', run);
-      if (pbtn) { pbtn.setAttribute('aria-pressed', String(paused)); pbtn.setAttribute('aria-label', paused ? 'Afspelen' : 'Pauzeren'); pbtn.firstElementChild.textContent = paused ? '▶' : 'Ⅱ'; }
-      if (run) timer = setTimeout(() => go(cur + 1), 3000);
-    };
-    const manual = i => { paused = true; go(i); };
-    vh.querySelector('.vprev')?.addEventListener('click', () => manual(cur - 1));
-    vh.querySelector('.vnext')?.addEventListener('click', () => manual(cur + 1));
-    pbtn?.addEventListener('click', () => { paused = !paused; plan(); });
-    dots.forEach((d, k) => d.addEventListener('click', () => manual(k)));
-    if (matchMedia('(hover: hover)').matches) { vh.addEventListener('mouseenter', () => { hover = true; plan(); }); vh.addEventListener('mouseleave', () => { hover = false; plan(); }); }
-    vh.addEventListener('focusin', () => { focus = true; plan(); });
-    vh.addEventListener('focusout', () => setTimeout(() => { focus = vh.contains(document.activeElement); plan(); }, 0));
-    document.addEventListener('visibilitychange', plan);
-    rm.addEventListener?.('change', () => { if (rm.matches) { paused = true; go(0); } else plan(); });
-    if ('IntersectionObserver' in window) new IntersectionObserver(e => { seen = e[0].isIntersecting; plan(); }, { threshold: [0, .35, .6] }).observe(vh);
     const strip = vh.querySelector('.vstrip');
     if (strip && 'IntersectionObserver' in window) new IntersectionObserver(e => document.body.classList.toggle('hero-out', !e[0].isIntersecting)).observe(strip);
     else document.body.classList.add('hero-out');
-    load(slides[1]); plan();
-    /* icon strip: arrow only when it overflows */
     const sc = vh.querySelector('.vscroll'), more = vh.querySelector('.vmore');
     if (sc && more) {
       const upd = () => { const over = sc.scrollWidth > sc.clientWidth + 4; more.hidden = !over; more.classList.toggle('end', sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 4); };
-      more.addEventListener('click', () => { const end = sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 4; sc.scrollBy({ left: end ? -sc.scrollWidth : sc.clientWidth * .7, behavior: rm.matches ? 'auto' : 'smooth' }); });
+      more.addEventListener('click', () => { const end = sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 4; sc.scrollBy({ left: end ? -sc.scrollWidth : sc.clientWidth * .7, behavior: reduce.matches ? 'auto' : 'smooth' }); });
       sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
     }
   }
