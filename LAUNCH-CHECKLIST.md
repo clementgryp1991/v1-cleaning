@@ -22,11 +22,7 @@ Deze site staat nog op concept. GitHub Pages publiceert vanaf `main`. Deze check
 
 ## Bewijzen die nog ontbreken
 
-Niet invullen met aannames. Geen VCA of andere certificaten vermelden zolang CDW ze niet heeft.
-
-- [ ] `[INVULLEN: actief sinds]`
-- [ ] `[INVULLEN: certificaten/verzekering]`
-- [ ] `[INVULLEN: klantlogo’s of cases]`
+De witte bewijsstrook onder de hero is verwijderd. Zet die niet terug met verzonnen cijfers. Actief sinds, certificaten en klantlogo’s of cases blijven onbekend. Geen VCA of ander certificaat vermelden zolang CDW het niet heeft.
 
 ## Wat niet op de site hoort
 
