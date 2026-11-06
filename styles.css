@@ -1208,9 +1208,7 @@ body.home .nav.scrolled{background:rgba(10,30,64,.94);-webkit-backdrop-filter:bl
 @media(max-width:1000px){.vhero{padding-top:calc(var(--sat) + 84px)}.vctrl{justify-content:flex-start}}
 @media(max-width:700px){.vhero h1{font-size:clamp(2.4rem,12vw,3.4rem)}.vhero .cta{display:grid}.vhero .cta .btn{width:100%}.vshade{background:linear-gradient(0deg,rgba(6,20,48,.95) 0%,rgba(10,30,64,.75) 55%,rgba(10,30,64,.55) 100%)}.vchip{flex-basis:104px;min-height:80px;font-size:.76rem}.vctrl{margin-bottom:10px}.vdots button{width:22px}}
 @media(prefers-reduced-motion:reduce){.vs{transition:none}.vhero.playing .vs.on img{animation:none}}
-/* USP cards overlap the hero by 48px; the extra hero padding keeps the chips clear. */
-.vhero{padding-bottom:calc(72px + var(--sab))}
-body.home .usp{margin-top:-48px}
+/* Chip bar sits on the hero; the next section starts on its own padding. */
 .vhero h1{max-width:18ch}
 @media(max-width:700px){
   .vcopy{margin-bottom:0;padding-bottom:0}
