@@ -6,12 +6,21 @@
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Real visible height on iOS Safari (URL bar, keyboard) → --vvh. */
-  const setVh = () => { const h = (window.visualViewport && visualViewport.height) || innerHeight; root.style.setProperty('--vvh', Math.round(h) + 'px'); };
+  /* Visible height and the gap under it (Safari toolbar / home indicator) → --vvh, --vv-bottom. */
+  const setVh = () => {
+    const vv = window.visualViewport;
+    const h = (vv && vv.height) || innerHeight;
+    root.style.setProperty('--vvh', Math.round(h) + 'px');
+    const covered = vv ? Math.max(0, innerHeight - vv.height - vv.offsetTop) : 0;
+    root.style.setProperty('--vv-bottom', Math.round(covered) + 'px');
+  };
   setVh();
   addEventListener('resize', setVh, { passive: true });
   addEventListener('orientationchange', () => setTimeout(setVh, 250));
-  if (window.visualViewport) visualViewport.addEventListener('resize', setVh);
+  if (window.visualViewport) {
+    visualViewport.addEventListener('resize', setVh);
+    visualViewport.addEventListener('scroll', setVh);
+  }
 
   /* Body scroll lock while any modal dialog is open (iOS ignores overflow:hidden on body). */
   let lockY = 0, locked = false;
@@ -90,7 +99,7 @@
     const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
     nav && nav.classList.toggle('scrolled', y > 8);
     prog && (prog.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`);
-    mbar && mbar.classList.toggle('show', y > 280 && !$('dialog[open]'));
+    mbar && mbar.classList.toggle('show', y > 48 && !$('dialog[open]'));
     totop && totop.classList.toggle('show', y > 900);
   };
   addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(onScroll); } }, { passive: true });
