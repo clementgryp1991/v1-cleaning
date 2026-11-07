@@ -67,7 +67,8 @@
     const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     nav.classList.toggle('scrolled', scrollY > 8);
     progress.style.transform = `scaleX(${Math.min(1, scrollY / max)})`;
-    mbar.classList.toggle('show', scrollY > 500 && !inView($('#offerte')) && !$('dialog[open]') && !$('footer').matches(':focus-within'));
+    const narrow = matchMedia('(max-width: 700px)').matches;
+    mbar.classList.toggle('show', scrollY > (narrow ? 48 : 500) && !inView($('#offerte')) && !$('dialog[open]') && !$('footer').matches(':focus-within'));
     $('#totop').classList.toggle('show', scrollY > 900);
     let current = '';
     navLinks.forEach(a => { const section = document.getElementById(a.hash.slice(1)); if (section && section.getBoundingClientRect().top <= 130) current = a.hash; });
